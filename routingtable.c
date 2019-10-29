@@ -22,8 +22,18 @@ int UpdateRoutes(struct pkt_RT_UPDATE *RecvdUpdatePacket, int costToNbr, int myI
 
 
 ////////////////////////////////////////////////////////////////
-void ConvertTabletoPkt(struct pkt_RT_UPDATE *UpdatePacketToSend, int myID){
-	/* ----- YOUR CODE HERE ----- */
+void ConvertTabletoPkt(struct pkt_RT_UPDATE *UpdatePacketToSend, int myID)
+{
+	int i;
+	for(i = 0; i < NumRoutes; i++)
+	{
+		UpdatePacketToSend->route[i] = routingTable[i];
+	}
+	UpdatePacketToSend->sender_id = myID;
+	UpdatePacketToSend->no_routes = NumRoutes;
+
+	//Need to convert from host to network here or main?
+
 	return;
 }
 
@@ -49,7 +59,16 @@ void PrintRoutes (FILE* Logfile, int myID){
 
 
 ////////////////////////////////////////////////////////////////
-void UninstallRoutesOnNbrDeath(int DeadNbr){
-	/* ----- YOUR CODE HERE ----- */
+void UninstallRoutesOnNbrDeath(int DeadNbr)
+{
+	int i;
+	for(i = 0; i < NumRoutes; i++)
+	{
+		if(routingTable[i].next_hop == DeadNbr)
+		{
+			routingTable[i].cost = INFINITY;
+		}
+	}
+
 	return;
 }
