@@ -8,8 +8,22 @@ int NumRoutes;
 
 
 ////////////////////////////////////////////////////////////////
-void InitRoutingTbl (struct pkt_INIT_RESPONSE *InitResponse, int myID){
-	/* ----- YOUR CODE HERE ----- */
+void InitRoutingTbl (struct pkt_INIT_RESPONSE *InitResponse, int myID)
+{
+	int i=0;
+	for(i=0;i<(InitResponse->no_nbr);i++)
+	{
+		routingTable[i].next_hop = InitResponse->nbrcost[i].nbr;
+		routingTable[i].dest_id = InitResponse->nbrcost[i].nbr;
+		routingTable[i].cost = InitResponse->nbrcost[i].cost;
+	}
+	
+	routingTable[i].next_hop = myID;
+	routingTable[i].dest_id = myID; 
+	routingTable[i].cost = 0;
+	
+	//update NumRoutes global variable
+	NumRoutes = (InitResponse->no_nbr) + 1;
 	return;
 }
 
