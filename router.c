@@ -8,7 +8,7 @@
 
 typedef struct sockaddr SA; //global, need to set type in bind call
 
-int open_udpfd(int port)
+/*int open_udpfd(int port)
 {
 	int udpfd, optval = 1;	
 	struct sockaddr_in serveraddr;
@@ -27,24 +27,59 @@ int open_udpfd(int port)
 	serveraddr.sin_family = AF_INET;
 	serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
 	serveraddr.sin_port = htons((unsigned short)port);
-	if(bind(listenfd, (SA *)&serveraddr, sizeof(serveraddr)) < 0)
+	if(bind(udpfd, (SA *)&serveraddr, sizeof(serveraddr)) < 0)
 	{
 		return -1;
 	}
 
 	return udpfd;
-}
+}*/
 
 int main(int argc, char **argv)
 {
-	int myID, ne_port, router_port, ne_fd, router_fd;
-	
-	myID = atoi(argv[1]);
-	ne_port = atoi(argv[3]);
-	router_port = atoi(argv[4]);
+	int myID, ne_port, router_port, router_fd;
+	struct hostent *hp;
+	struct sockaddr_in neAddr, routerAddr;
 
-	ne_fd = open_udpfd(ne_port);
-	router_fd = open_udpfd(router_port);
+	myID = atoi(argv[1]);
+
+	//connect to network emmulator 
+	if((hp = gethostbyname(argv[2])) == NULL)
+	{
+		return -1;
+	}
+
+	bzero((char *) &neAddr, sizeof(neAddr));
+	neAddr.sin_family = AF_INET;
+	bcopy((char *)hp->h_addr,
+		  (char *)&neAddr.sin_addr.s_addr, hp->h_length);
+	ne_port = atoi(argv[3]);
+	neAddr.sin_port = htons(ne_port);
+
+	//create router port 
+	router_port = atoi(argv[4]);
+	if((router_fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
+	{
+		return -1; 
+	}
+
+	bzero((char *) &routerAddr, sizeof(routerAddr));
+	routerAddr.sin_family = AF_INET;
+	routerAddr.sin_addr.s_addr = INADDR_ANY;
+	routerAddr.sin_port = htons(router_port);
+
+	if(bind(router_fd, (SA *)&routerAddr, sizeof(routerAddr)) < 0)
+	{
+		return -1;
+	}
+
+	//sends initial request 
+	struct pkt_INIT_REQUEST initReq;
+	initReq.router_id = htonl(myID);
+
+	sendto(router_fd, (struct pkt_INIT_RESPONSE*)&initReq, sizeof(initReq), 0, (SA *)&neAddr, sizeof(neAddr));
+
+	return 0;
 }
 
 
