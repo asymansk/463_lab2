@@ -87,8 +87,12 @@ int main(int argc, char **argv)
 	//initalized router table
 	InitRoutingTbl(&initRes, myID);
 
-	
-
+	char* file = (char*)malloc(15);
+	file = strdup("ourRouter");
+	strcat(file, argv[1]);
+	strcat(file, ".log");
+	FILE* printTo = fopen(file, "w");
+	PrintRoutes(printTo, myID);
 
 	return 0;
 }
