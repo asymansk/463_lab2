@@ -8,6 +8,7 @@ int NumRoutes;
 
 
 ////////////////////////////////////////////////////////////////
+
 void InitRoutingTbl (struct pkt_INIT_RESPONSE *InitResponse, int myID)
 {
 	int i;
