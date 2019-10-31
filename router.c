@@ -79,6 +79,17 @@ int main(int argc, char **argv)
 
 	sendto(router_fd, (struct pkt_INIT_RESPONSE*)&initReq, sizeof(initReq), 0, (SA *)&neAddr, sizeof(neAddr));
 
+	//receives initial response 
+	struct pkt_INIT_RESPONSE initRes;	
+	recvfrom(router_fd, (struct pkt_INIT_RESPONSE*)&initRes, sizeof(initRes), 0, (SA *)&neAddr, (socklen_t*)sizeof(neAddr));
+	ntoh_pkt_INIT_RESPONSE(&initRes);
+
+	//initalized router table
+	InitRoutingTbl(&initRes, myID);
+
+	
+
+
 	return 0;
 }
 
