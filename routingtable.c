@@ -8,9 +8,23 @@ int NumRoutes;
 
 
 ////////////////////////////////////////////////////////////////
-
 void InitRoutingTbl (struct pkt_INIT_RESPONSE *InitResponse, int myID)
 {
+	
+	//int i;
+	
+	//for (i = 0; i < InitResponse->no_nbr; i++) {
+		//routingTable[i].dest_id = InitResponse->nbrcost[i].nbr;
+		//routingTable[i].next_hop = InitResponse->nbrcost[i].nbr;
+		//routingTable[i].cost = InitResponse->nbrcost[i].cost;
+	//}
+
+	//routingTable[i].dest_id = myID;
+	//routingTable[i].next_hop = myID;
+	//routingTable[i].cost = 0;
+
+	//NumRoutes = i + 1;
+	
 	int i;
 	for(i = 0; i < (InitResponse->no_nbr); i++)
 	{
@@ -142,6 +156,7 @@ void PrintRoutes (FILE* Logfile, int myID){
 	}
 	fprintf(Logfile, "\n");
 	fflush(Logfile);
+	return;
 }
 
 
